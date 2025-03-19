@@ -13,8 +13,11 @@ export const budgetReducer = (
   action: BudgetActions
 ) => {
   if ((action.type = "add-budget")) {
+
+    console.log(action.payload.budget)
     return {
       ...state,
+      budget: action.payload.budget
     };
   }
   return state;
