@@ -1,18 +1,36 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { categories } from "../data/categories";
 import DatePicker from "react-date-picker";
-import 'react-date-picker/dist/DatePicker.css'
-import 'react-calendar/dist/Calendar.css'
-import { DraftExpense, Expense } from "../types";
+import "react-date-picker/dist/DatePicker.css";
+import "react-calendar/dist/Calendar.css";
+import { DraftExpense, Expense, Value } from "../types";
 
 export default function ExpenseForm() {
+  const [expense, setExpense] = useState<DraftExpense>({
+    expenseName: "",
+    amount: 0,
+    category: "",
+    date: new Date(),
+  });
 
-    const [expense, setExpense] = useState<DraftExpense>({
-        expenseName: '',
-        amount: 0,
-        category: '',
-        date: new Date()
+  const handleChane = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    const isAmountField = ["amount"].includes(name);
+    setExpense({
+        ...expense,
+        [name] : isAmountField ? +value : value
     })
+  };
+
+  const handleDateChange = (value: Value) => {
+    setExpense({
+      ...expense,
+      date: value,
+    });
+  };
 
   return (
     <form action="" className="space-y-5">
@@ -31,6 +49,7 @@ export default function ExpenseForm() {
           placeholder="Añade el nombre del gasto"
           className="bg-slate-100 p-2"
           value={expense.expenseName}
+          onChange={handleChane}
         />
       </div>
 
@@ -45,6 +64,7 @@ export default function ExpenseForm() {
           placeholder="Añade la cantidad del gasto: ej. 300"
           className="bg-slate-100 p-2"
           value={expense.amount}
+          onChange={handleChane}
         />
       </div>
 
@@ -52,7 +72,13 @@ export default function ExpenseForm() {
         <label htmlFor="category" className="text-xl">
           Categoría:
         </label>
-        <select id="category" className="bg-slate-100 p-2" name="category" value={expense.category}>
+        <select
+          id="category"
+          className="bg-slate-100 p-2"
+          name="category"
+          value={expense.category}
+          onChange={handleChane}
+        >
           <option value="">-- Seleccione --</option>
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
@@ -67,8 +93,9 @@ export default function ExpenseForm() {
           Fecha gasto:
         </label>
         <DatePicker
-            className="bg-slate-100 p-2 border-0"
-            value={expense.date}
+          className="bg-slate-100 p-2 border-0"
+          value={expense.date}
+          onChange={handleDateChange}
         />
       </div>
 
