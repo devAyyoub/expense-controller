@@ -20,13 +20,13 @@ export default function ExpenseForm() {
   const { dispatch, state } = useBudget();
 
   useEffect(() => {
-    if (state.edtingId) {
+    if (state.editingId) {
       const editingExpense = state.expenses.filter(
-        (currentExpense) => state.edtingId === currentExpense.id
+        (currentExpense) =>  currentExpense.id === state.editingId
       )[0];
       setExpense(editingExpense);
     }
-  }, [state.edtingId]);
+  }, [state.editingId]);
 
   const handleChane = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
@@ -55,7 +55,14 @@ export default function ExpenseForm() {
       return;
     }
 
-    dispatch({ type: "add-expense", payload: { expense } });
+    if (state.editingId) {
+      dispatch({
+        type: "update-expense",
+        payload: { expense: { id: state.editingId, ...expense } },
+      });
+    } else {
+      dispatch({ type: "add-expense", payload: { expense } });
+    }
   };
 
   return (
