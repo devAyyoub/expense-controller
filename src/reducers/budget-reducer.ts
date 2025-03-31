@@ -6,15 +6,16 @@ export type BudgetActions =
   | { type: "show-modal" }
   | { type: "hide-modal" }
   | { type: "add-expense"; payload: { expense: DraftExpense } }
-  | { type: "remove-expense"; payload: { id: Expense['id'] } }
-  | { type: "get-expense-by-id"; payload: { id: Expense['id'] } }
-  | { type: "update-expense"; payload: { expense: Expense } };
+  | { type: "remove-expense"; payload: { id: Expense["id"] } }
+  | { type: "get-expense-by-id"; payload: { id: Expense["id"] } }
+  | { type: "update-expense"; payload: { expense: Expense } }
+  | { type: "reset-form" };
 
 export type BudgetState = {
   budget: number;
   modal: boolean;
   expenses: Expense[];
-  editingId: Expense['id']
+  editingId: Expense["id"];
 };
 
 const createExpense = (draftExpense: DraftExpense): Expense => {
@@ -24,22 +25,21 @@ const createExpense = (draftExpense: DraftExpense): Expense => {
   };
 };
 
-const localStorageExpenses = () : Expense[] => {
-  const localStorageExpenses = localStorage.getItem('expenses')
-  return localStorageExpenses ? JSON.parse(localStorageExpenses) : []
-}
+const localStorageExpenses = (): Expense[] => {
+  const localStorageExpenses = localStorage.getItem("expenses");
+  return localStorageExpenses ? JSON.parse(localStorageExpenses) : [];
+};
 
-
-const initialBudget = () : number => {
-  const localStorageBudget = localStorage.getItem('budget')
-  return localStorageBudget ? +localStorageBudget : 0
-}
+const initialBudget = (): number => {
+  const localStorageBudget = localStorage.getItem("budget");
+  return localStorageBudget ? +localStorageBudget : 0;
+};
 
 export const initialState: BudgetState = {
   budget: initialBudget(),
   modal: false,
   expenses: localStorageExpenses(),
-  editingId: ''
+  editingId: "",
 };
 
 export const budgetReducer = (
@@ -64,7 +64,7 @@ export const budgetReducer = (
     return {
       ...state,
       modal: false,
-      editingId: ''
+      editingId: "",
     };
   }
 
@@ -73,14 +73,16 @@ export const budgetReducer = (
     return {
       ...state,
       expenses: [...state.expenses, expense],
-      modal: false
+      modal: false,
     };
   }
 
   if (action.type === "remove-expense") {
     return {
       ...state,
-      expenses: state.expenses.filter(expense => expense.id !== action.payload.id)
+      expenses: state.expenses.filter(
+        (expense) => expense.id !== action.payload.id
+      ),
     };
   }
 
@@ -88,19 +90,31 @@ export const budgetReducer = (
     return {
       ...state,
       editingId: action.payload.id,
-      modal: true
+      modal: true,
     };
   }
 
   if (action.type === "update-expense") {
     return {
       ...state,
-      expenses: state.expenses.map(expense => expense.id === action.payload.expense.id ? action.payload.expense : expense),
+      expenses: state.expenses.map((expense) =>
+        expense.id === action.payload.expense.id
+          ? action.payload.expense
+          : expense
+      ),
       modal: false,
-      editingId: ''
+      editingId: "",
     };
   }
-  
+
+  if (action.type === "reset-form") {
+    return {
+      budget: 0,
+      modal: false,
+      expenses: [],
+      editingId: "",
+    };
+  }
 
   return state;
 };
