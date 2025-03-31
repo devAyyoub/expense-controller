@@ -9,7 +9,7 @@ export type BudgetActions =
   | { type: "remove-expense"; payload: { id: Expense["id"] } }
   | { type: "get-expense-by-id"; payload: { id: Expense["id"] } }
   | { type: "update-expense"; payload: { expense: Expense } }
-  | { type: "reset-form" };
+  | { type: "reset-app" };
 
 export type BudgetState = {
   budget: number;
@@ -107,10 +107,9 @@ export const budgetReducer = (
     };
   }
 
-  if (action.type === "reset-form") {
+  if (action.type === "reset-app") {
     return {
       budget: 0,
-      modal: false,
       expenses: [],
       editingId: "",
     };
