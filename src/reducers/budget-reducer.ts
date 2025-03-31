@@ -24,10 +24,21 @@ const createExpense = (draftExpense: DraftExpense): Expense => {
   };
 };
 
+const localStorageExpenses = () : Expense[] => {
+  const localStorageExpenses = localStorage.getItem('expenses')
+  return localStorageExpenses ? JSON.parse(localStorageExpenses) : []
+}
+
+
+const initialBudget = () : number => {
+  const localStorageBudget = localStorage.getItem('budget')
+  return localStorageBudget ? +localStorageBudget : 0
+}
+
 export const initialState: BudgetState = {
-  budget: 0,
+  budget: initialBudget(),
   modal: false,
-  expenses: [],
+  expenses: localStorageExpenses(),
   editingId: ''
 };
 
